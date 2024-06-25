@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,10 +15,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.sharp.Close
+import androidx.compose.material.icons.sharp.Done
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -42,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import org.openapp.splitmoney.ui.forms.NewTransactionForm
 import org.openapp.splitmoney.ui.theme.SplitmoneyTheme
 
 class MainActivity : ComponentActivity() {
@@ -95,7 +100,7 @@ fun StartView(){
                 items(list) { item -> TransactionItemView(item, 5.0) }
             }
 
-            NewTransactionForm(showNewTransactionForm = openNewTransactionForm) {
+            NewTransactionFormDialog(showNewTransactionForm = openNewTransactionForm) {
                 openNewTransactionForm.value = false
             }
         }
@@ -121,8 +126,9 @@ fun TransactionItemView(name: String, total: Double, modifier: Modifier = Modifi
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewTransactionForm(showNewTransactionForm: MutableState<Boolean>, onDismissRequest: () -> Unit) {
+fun NewTransactionFormDialog(showNewTransactionForm: MutableState<Boolean>, onDismissRequest: () -> Unit) {
     if(showNewTransactionForm.value) {
         Dialog(
             onDismissRequest = { onDismissRequest() },
@@ -132,16 +138,36 @@ fun NewTransactionForm(showNewTransactionForm: MutableState<Boolean>, onDismissR
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(5.dp),
-                shape = RoundedCornerShape(16.dp),
             ) {
-                Text(
-                    text = "This is a minimal dialog",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .wrapContentSize(Alignment.Center),
-                    textAlign = TextAlign.Center,
-                )
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text("New Transaction")
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = { showNewTransactionForm.value = false }) {
+                                    Icon(
+                                        imageVector = Icons.Sharp.Close,
+                                        contentDescription = "Close New Transaction Form"
+                                    )
+                                }
+                            },
+                            actions = {
+                                IconButton(onClick = { showNewTransactionForm.value = false }) {
+                                    Icon(
+                                        imageVector = Icons.Sharp.Done,
+                                        contentDescription = "Submit New Transaction"
+                                    )
+                                }
+                            }
+                        )
+                    }
+                ) { innerPadding ->
+                    Column(modifier = Modifier.padding(innerPadding)) {
+                        NewTransactionForm()
+                    }
+                }
             }
         }
     }
