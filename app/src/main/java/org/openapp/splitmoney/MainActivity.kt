@@ -5,20 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.sharp.Close
 import androidx.compose.material.icons.sharp.Done
@@ -36,16 +30,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import org.openapp.splitmoney.models.Transaction
 import org.openapp.splitmoney.ui.forms.NewTransactionForm
 import org.openapp.splitmoney.ui.theme.SplitmoneyTheme
 
@@ -62,7 +54,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartView(){
-    val openNewTransactionForm = remember { mutableStateOf(false) }
+    val showNewTransactionForm = remember { mutableStateOf(false) }
     SplitmoneyTheme {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
         Scaffold(
@@ -88,30 +80,43 @@ fun StartView(){
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        openNewTransactionForm.value = true
+                        showNewTransactionForm.value = true
                     }
                 ) {
                     Icon(Icons.Filled.Add, "Floating action button.")
                 }
             }
         ) { innerPadding ->
-            val list = listOf("Momos", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger", "Burger");
+            val list = listOf(
+                Transaction(
+                    description = "Momos",
+                    amount = 100.0,
+                    members = listOf(1, 2, 4),
+                    payer = 1
+                ),
+                Transaction(
+                    description = "Burger",
+                    amount = 100.0,
+                    members = listOf(1, 2, 4),
+                    payer = 2
+                )
+            );
             LazyColumn(modifier = Modifier.padding(innerPadding)) {
-                items(list) { item -> TransactionItemView(item, 5.0) }
+                items(list) { item -> TransactionItemView(item) }
             }
 
-            NewTransactionFormDialog(showNewTransactionForm = openNewTransactionForm) {
-                openNewTransactionForm.value = false
+            NewTransactionFormDialog(showNewTransactionForm = showNewTransactionForm) {
+                showNewTransactionForm.value = false
             }
         }
     }
 }
 
 @Composable
-fun TransactionItemView(name: String, total: Double, modifier: Modifier = Modifier) {
+fun TransactionItemView(transaction: Transaction) {
     ListItem(
         headlineContent = {
-            Text(text = name)
+            Text(text = transaction.description)
         },
         leadingContent = {
             Icon(
@@ -120,7 +125,7 @@ fun TransactionItemView(name: String, total: Double, modifier: Modifier = Modifi
             )
         },
         supportingContent = {
-            Text(text = "$ $total")
+            Text(text = "$ ${transaction.amount}")
         }
 
     )
@@ -129,6 +134,12 @@ fun TransactionItemView(name: String, total: Double, modifier: Modifier = Modifi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTransactionFormDialog(showNewTransactionForm: MutableState<Boolean>, onDismissRequest: () -> Unit) {
+    val newTransaction by remember { mutableStateOf(
+        Transaction(
+            members = listOf(1, 2, 4),
+            payer = 1
+        )
+    ) }
     if(showNewTransactionForm.value) {
         Dialog(
             onDismissRequest = { onDismissRequest() },
@@ -146,7 +157,7 @@ fun NewTransactionFormDialog(showNewTransactionForm: MutableState<Boolean>, onDi
                                 Text("New Transaction")
                             },
                             navigationIcon = {
-                                IconButton(onClick = { showNewTransactionForm.value = false }) {
+                                IconButton(onClick = { onDismissRequest() }) {
                                     Icon(
                                         imageVector = Icons.Sharp.Close,
                                         contentDescription = "Close New Transaction Form"
@@ -154,7 +165,10 @@ fun NewTransactionFormDialog(showNewTransactionForm: MutableState<Boolean>, onDi
                                 }
                             },
                             actions = {
-                                IconButton(onClick = { showNewTransactionForm.value = false }) {
+                                IconButton(onClick = {
+                                    println(newTransaction.amount)
+                                    onDismissRequest()
+                                }) {
                                     Icon(
                                         imageVector = Icons.Sharp.Done,
                                         contentDescription = "Submit New Transaction"
@@ -165,7 +179,7 @@ fun NewTransactionFormDialog(showNewTransactionForm: MutableState<Boolean>, onDi
                     }
                 ) { innerPadding ->
                     Column(modifier = Modifier.padding(innerPadding)) {
-                        NewTransactionForm()
+                        NewTransactionForm(newTransaction)
                     }
                 }
             }
