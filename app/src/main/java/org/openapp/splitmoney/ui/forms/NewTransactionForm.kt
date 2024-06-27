@@ -16,6 +16,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -29,6 +30,8 @@ fun NewTransactionForm(transaction: Transaction) {
 
     var description by rememberSaveable { mutableStateOf(transaction.description) }
     var amount by rememberSaveable { mutableStateOf(transaction.amount.toString()) }
+    var members by remember { mutableStateOf(transaction.members) }
+    var payer by remember { mutableStateOf(transaction.payer) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,8 +81,11 @@ fun NewTransactionForm(transaction: Transaction) {
         ) {
             Text("Paid by")
 
-            Button(onClick = { /*TODO*/ }) {
-                Text(transaction.payer.toString())
+            Button(onClick = {
+                payer = members[2]
+                transaction.payer = members[2]
+            }) {
+                Text(payer.name)
             }
 
             Text("and split")

@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import org.openapp.splitmoney.models.Member
 import org.openapp.splitmoney.models.Transaction
 import org.openapp.splitmoney.ui.forms.NewTransactionForm
 import org.openapp.splitmoney.ui.theme.SplitmoneyTheme
@@ -91,14 +92,22 @@ fun StartView(){
                 Transaction(
                     description = "Momos",
                     amount = 100.0,
-                    members = listOf(1, 2, 4),
-                    payer = 1
+                    members = listOf(
+                        Member(id = 1, name="Shavez"),
+                        Member(id = 2, name="Abhinav"),
+                        Member(id = 3, name="Abhishek")
+                    ),
+                    payer = Member(id = 1, name="Shavez")
                 ),
                 Transaction(
                     description = "Burger",
                     amount = 100.0,
-                    members = listOf(1, 2, 4),
-                    payer = 2
+                    members = listOf(
+                        Member(id = 1, name="Shavez"),
+                        Member(id = 2, name="Abhinav"),
+                        Member(id = 3, name="Abhishek")
+                    ),
+                    payer = Member(id = 2, name="Abhinav")
                 )
             );
             LazyColumn(modifier = Modifier.padding(innerPadding)) {
@@ -125,7 +134,7 @@ fun TransactionItemView(transaction: Transaction) {
             )
         },
         supportingContent = {
-            Text(text = "$ ${transaction.amount}")
+            Text(text = "${transaction.payer.name} paid $${transaction.amount}")
         }
 
     )
@@ -136,8 +145,12 @@ fun TransactionItemView(transaction: Transaction) {
 fun NewTransactionFormDialog(showNewTransactionForm: MutableState<Boolean>, onDismissRequest: () -> Unit) {
     val newTransaction by remember { mutableStateOf(
         Transaction(
-            members = listOf(1, 2, 4),
-            payer = 1
+            members = listOf(
+                Member(id = 1, name="Shavez"),
+                Member(id = 2, name="Abhinav"),
+                Member(id = 3, name="Abhishek")
+            ),
+            payer = Member(id = 1, name="Shavez")
         )
     ) }
     if(showNewTransactionForm.value) {
