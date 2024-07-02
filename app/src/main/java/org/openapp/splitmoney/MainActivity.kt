@@ -37,6 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import org.openapp.splitmoney.models.Member
 import org.openapp.splitmoney.models.Transaction
 import org.openapp.splitmoney.ui.forms.NewTransactionForm
@@ -47,17 +50,49 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StartView()
+            Navigator()
         }
     }
 }
 
+@Composable
+fun Navigator(){
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "Home") {
+        composable("Home") { Home() }
+        // Add more destinations similarly.
+    }
+
+}
+
+@Composable
+fun TransactionItemView(transaction: Transaction) {
+    ListItem(
+        headlineContent = {
+            Text(text = transaction.description)
+        },
+        leadingContent = {
+            Icon(
+                Icons.Filled.Favorite,
+                contentDescription = "Localized description",
+            )
+        },
+        supportingContent = {
+            Text(text = "${transaction.payer.name} paid $${transaction.amount}")
+        }
+
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartView(){
+fun Home() {
     val showNewTransactionForm = remember { mutableStateOf(false) }
+
     SplitmoneyTheme {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
@@ -121,25 +156,6 @@ fun StartView(){
     }
 }
 
-@Composable
-fun TransactionItemView(transaction: Transaction) {
-    ListItem(
-        headlineContent = {
-            Text(text = transaction.description)
-        },
-        leadingContent = {
-            Icon(
-                Icons.Filled.Favorite,
-                contentDescription = "Localized description",
-            )
-        },
-        supportingContent = {
-            Text(text = "${transaction.payer.name} paid $${transaction.amount}")
-        }
-
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewTransactionFormDialog(showNewTransactionForm: MutableState<Boolean>, onDismissRequest: () -> Unit) {
@@ -199,11 +215,3 @@ fun NewTransactionFormDialog(showNewTransactionForm: MutableState<Boolean>, onDi
         }
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    SplitmoneyTheme {
-//        Greeting("Android")
-//    }
-//}

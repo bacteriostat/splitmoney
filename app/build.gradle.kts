@@ -66,4 +66,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Kotlin
+    implementation(libs.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+
+    // Feature module Support
+    implementation(libs.androidx.navigation.dynamic.features.fragment)
+
+    // Jetpack Compose Integration
+    implementation(libs.androidx.navigation.compose)
+
+
 }
