@@ -1,4 +1,4 @@
-package org.openapp.splitmoney.ui.forms
+package org.openapp.splitmoney.ui.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

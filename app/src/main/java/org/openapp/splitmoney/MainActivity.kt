@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.sharp.Close
 import androidx.compose.material.icons.sharp.Done
 import androidx.compose.material3.Card
@@ -23,6 +23,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -42,7 +44,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.openapp.splitmoney.models.Member
 import org.openapp.splitmoney.models.Transaction
-import org.openapp.splitmoney.ui.forms.NewTransactionForm
+import org.openapp.splitmoney.ui.pages.MembersPage
+import org.openapp.splitmoney.ui.pages.NewTransactionForm
+import org.openapp.splitmoney.ui.pages.TransactionsPage
 import org.openapp.splitmoney.ui.theme.SplitmoneyTheme
 
 class MainActivity : ComponentActivity() {
@@ -63,7 +67,6 @@ fun Navigator(){
         composable("Home") { Home() }
         // Add more destinations similarly.
     }
-
 }
 
 @Composable
@@ -89,16 +92,38 @@ fun TransactionItemView(transaction: Transaction) {
 @Composable
 fun Home() {
     val showNewTransactionForm = remember { mutableStateOf(false) }
+    val currentPage = remember { mutableStateOf("Transactions") }
 
     SplitmoneyTheme {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            bottomBar = {
+                NavigationBar {
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Filled.List, contentDescription = "Transactions") },
+                        label = { Text("Transactions") },
+                        selected = currentPage.value == "Transactions",
+                        onClick = {
+                            currentPage.value = "Transactions"
+                        },
+                    )
+
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Filled.Person, contentDescription = "Members") },
+                        label = { Text("Members") },
+                        selected = currentPage.value == "Members",
+                        onClick = {
+                            currentPage.value = "Members"
+                        },
+                    )
+                }
+            },
             topBar = {
                 MediumTopAppBar(
                     title = {
-                        Text("Splitmoney")
+                        Text(currentPage.value)
                     },
                     scrollBehavior = scrollBehavior,
                     actions = {
@@ -123,31 +148,11 @@ fun Home() {
                 }
             }
         ) { innerPadding ->
-            val list = listOf(
-                Transaction(
-                    description = "Momos",
-                    amount = 100.0,
-                    members = listOf(
-                        Member(id = 1, name="Shavez"),
-                        Member(id = 2, name="Abhinav"),
-                        Member(id = 3, name="Abhishek")
-                    ),
-                    payer = Member(id = 1, name="Shavez")
-                ),
-                Transaction(
-                    description = "Burger",
-                    amount = 100.0,
-                    members = listOf(
-                        Member(id = 1, name="Shavez"),
-                        Member(id = 2, name="Abhinav"),
-                        Member(id = 3, name="Abhishek")
-                    ),
-                    payer = Member(id = 2, name="Abhinav")
-                )
-            );
-            LazyColumn(modifier = Modifier.padding(innerPadding)) {
-                items(list) { item -> TransactionItemView(item) }
-            }
+
+            if(currentPage.value == "Transactions")
+                TransactionsPage(innerPadding = innerPadding)
+            else if(currentPage.value == "Members")
+                MembersPage(members = listOf(Member(1, "Shavez")), innerPadding)
 
             NewTransactionFormDialog(showNewTransactionForm = showNewTransactionForm) {
                 showNewTransactionForm.value = false
