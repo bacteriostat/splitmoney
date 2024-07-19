@@ -9,10 +9,16 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.sharp.Close
+import androidx.compose.material.icons.sharp.Done
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +29,59 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import org.openapp.splitmoney.models.Member
 import org.openapp.splitmoney.models.Transaction
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewTransactionFormPage(navController: NavController) {
+    val newTransaction by remember {
+        mutableStateOf(
+            Transaction(
+                members = listOf(
+                    Member(id = 1, name = "Shavez"),
+                    Member(id = 2, name = "Abhinav"),
+                    Member(id = 3, name = "Abhishek")
+                ),
+                payer = Member(id = 1, name = "Shavez")
+            )
+        )
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("New Transaction")
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Sharp.Close,
+                            contentDescription = "Close New Transaction Form"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {
+                        println(newTransaction.amount)
+                        navController.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Sharp.Done,
+                            contentDescription = "Submit New Transaction"
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            NewTransactionForm(newTransaction)
+        }
+    }
+}
 
 @Composable
 fun NewTransactionForm(transaction: Transaction) {
