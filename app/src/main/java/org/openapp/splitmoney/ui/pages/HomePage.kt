@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.navigation.NavController
 import org.openapp.splitmoney.models.Member
+import org.openapp.splitmoney.models.Transaction
 import org.openapp.splitmoney.ui.common.MembersList
 import org.openapp.splitmoney.ui.common.TransactionsList
 import org.openapp.splitmoney.ui.theme.SplitmoneyTheme
@@ -87,8 +88,31 @@ fun Home(navController: NavController) {
             }
         ) { innerPadding ->
 
-            if(currentPage.value == "Transactions")
-                TransactionsList(innerPadding = innerPadding)
+            if(currentPage.value == "Transactions") {
+                val list = listOf(
+                    Transaction(
+                        description = "Momos",
+                        amount = 100.0,
+                        members = listOf(
+                            Member(id = 1, name = "Shavez"),
+                            Member(id = 2, name = "Abhinav"),
+                            Member(id = 3, name = "Abhishek")
+                        ),
+                        payer = Member(id = 1, name = "Shavez")
+                    ),
+                    Transaction(
+                        description = "Burger",
+                        amount = 100.0,
+                        members = listOf(
+                            Member(id = 1, name = "Shavez"),
+                            Member(id = 2, name = "Abhinav"),
+                            Member(id = 3, name = "Abhishek")
+                        ),
+                        payer = Member(id = 2, name = "Abhinav")
+                    )
+                )
+                TransactionsList(list, innerPadding = innerPadding)
+            }
             else if(currentPage.value == "Members")
                 MembersList(members = listOf(Member(1, "Shavez")), innerPadding)
         }

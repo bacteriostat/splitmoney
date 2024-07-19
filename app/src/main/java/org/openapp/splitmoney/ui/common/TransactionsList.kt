@@ -11,35 +11,13 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.openapp.splitmoney.models.Member
 import org.openapp.splitmoney.models.Transaction
 
 @Composable
-fun TransactionsList(innerPadding: PaddingValues) {
-    val list = listOf(
-        Transaction(
-            description = "Momos",
-            amount = 100.0,
-            members = listOf(
-                Member(id = 1, name="Shavez"),
-                Member(id = 2, name="Abhinav"),
-                Member(id = 3, name="Abhishek")
-            ),
-            payer = Member(id = 1, name="Shavez")
-        ),
-        Transaction(
-            description = "Burger",
-            amount = 100.0,
-            members = listOf(
-                Member(id = 1, name="Shavez"),
-                Member(id = 2, name="Abhinav"),
-                Member(id = 3, name="Abhishek")
-            ),
-            payer = Member(id = 2, name="Abhinav")
-        )
-    );
+fun TransactionsList(transactions: List<Transaction>, innerPadding: PaddingValues) {
+
     LazyColumn(modifier = Modifier.padding(innerPadding)) {
-        items(list) { item -> TransactionItemView(item) }
+        items(transactions) { item -> TransactionItemView(item) }
     }
 }
 
