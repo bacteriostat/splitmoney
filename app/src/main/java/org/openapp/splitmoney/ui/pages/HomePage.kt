@@ -1,6 +1,7 @@
 package org.openapp.splitmoney.ui.pages
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
@@ -41,7 +42,7 @@ fun Home(navController: NavController) {
             bottomBar = {
                 NavigationBar {
                     NavigationBarItem(
-                        icon = { Icon(Icons.Filled.List, contentDescription = "Transactions") },
+                        icon = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Transactions") },
                         label = { Text("Transactions") },
                         selected = currentPage.value == "Transactions",
                         onClick = {
