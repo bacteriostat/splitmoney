@@ -11,7 +11,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.openapp.splitmoney.models.Member
+import org.openapp.splitmoney.database.entities.Member
 import org.openapp.splitmoney.models.Transaction
 
 @Composable

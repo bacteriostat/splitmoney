@@ -22,7 +22,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import androidx.room.Room
+import org.openapp.splitmoney.database.AppDatabase
 import org.openapp.splitmoney.models.Member
 import org.openapp.splitmoney.models.Transaction
 import org.openapp.splitmoney.ui.common.MembersList
@@ -114,8 +117,10 @@ fun Home(navController: NavController) {
                 )
                 TransactionsList(list, innerPadding = innerPadding)
             }
-            else if(currentPage.value == "Members")
-                MembersList(members = listOf(Member(1, "Shavez")), innerPadding)
+            else if(currentPage.value == "Members") {
+
+                MembersList(members = listOf(org.openapp.splitmoney.database.entities.Member(1, "Shavez")), innerPadding)
+            }
         }
     }
 }
