@@ -9,7 +9,7 @@ import org.openapp.splitmoney.database.entities.Member
 @Dao
 interface MemberDao {
     @Query("SELECT * FROM member")
-    fun getAll(): List<Member>
+    suspend fun getAll(): List<Member>
 
     @Query("SELECT * FROM member WHERE id IN (:memberIds)")
     fun loadAllByIds(memberIds: IntArray): List<Member>
@@ -18,7 +18,7 @@ interface MemberDao {
     fun findByName(name: String): Member
 
     @Insert
-    fun insertAll(vararg users: Member)
+    suspend fun insertAll(vararg users: Member)
 
     @Delete
     fun delete(user: Member)

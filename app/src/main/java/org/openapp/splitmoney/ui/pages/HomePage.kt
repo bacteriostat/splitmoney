@@ -3,7 +3,6 @@ package org.openapp.splitmoney.ui.pages
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,18 +22,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.room.Room
-import org.openapp.splitmoney.database.AppDatabase
 import org.openapp.splitmoney.models.Member
 import org.openapp.splitmoney.models.Transaction
 import org.openapp.splitmoney.ui.common.MembersList
 import org.openapp.splitmoney.ui.common.TransactionsList
 import org.openapp.splitmoney.ui.theme.SplitmoneyTheme
+import org.openapp.splitmoney.ui.viewmodels.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(navController: NavController) {
+fun Home(navController: NavController, viewModel: HomeViewModel = viewModel()) {
     val currentPage = remember { mutableStateOf("Transactions") }
 
     SplitmoneyTheme {
@@ -116,6 +115,8 @@ fun Home(navController: NavController) {
                     )
                 )
                 TransactionsList(list, innerPadding = innerPadding)
+
+                viewModel.getTransactions(LocalContext.current)
             }
             else if(currentPage.value == "Members") {
 

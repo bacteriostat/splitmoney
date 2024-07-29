@@ -71,6 +71,7 @@ dependencies {
     // Kotlin
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // Feature module Support
     implementation(libs.androidx.navigation.dynamic.features.fragment)
@@ -81,6 +82,8 @@ dependencies {
     // Room
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
 
     ksp(libs.androidx.room.compiler)
 
