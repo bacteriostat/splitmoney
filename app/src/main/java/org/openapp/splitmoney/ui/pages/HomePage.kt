@@ -17,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -35,6 +37,8 @@ import org.openapp.splitmoney.ui.viewmodels.HomeViewModel
 @Composable
 fun Home(navController: NavController, viewModel: HomeViewModel = viewModel()) {
     val currentPage = remember { mutableStateOf("Transactions") }
+
+    val homeUiState by viewModel.uiState.collectAsState()
 
     SplitmoneyTheme {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -114,13 +118,14 @@ fun Home(navController: NavController, viewModel: HomeViewModel = viewModel()) {
                         payer = Member(id = 2, name = "Abhinav")
                     )
                 )
-                TransactionsList(list, innerPadding = innerPadding)
+                TransactionsList(homeUiState.transactions, innerPadding = innerPadding)
 
-                viewModel.getTransactions(LocalContext.current)
             }
             else if(currentPage.value == "Members") {
 
-                MembersList(members = listOf(org.openapp.splitmoney.database.entities.Member(1, "Shavez")), innerPadding)
+                viewModel.getMembers(LocalContext.current)
+
+                MembersList(members = homeUiState.members, innerPadding)
             }
         }
     }

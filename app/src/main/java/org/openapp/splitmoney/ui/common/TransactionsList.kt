@@ -11,7 +11,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.openapp.splitmoney.models.Transaction
+import org.openapp.splitmoney.database.entities.Transaction
 
 @Composable
 fun TransactionsList(transactions: List<Transaction>, innerPadding: PaddingValues) {
@@ -34,7 +34,7 @@ fun TransactionItemView(transaction: Transaction) {
             )
         },
         supportingContent = {
-            Text(text = "${transaction.payer.name} paid $${transaction.amount}")
+            Text(text = "${transaction.payer} paid $${transaction.amount}")
         }
 
     )
