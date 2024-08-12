@@ -26,8 +26,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import org.openapp.splitmoney.models.Member
-import org.openapp.splitmoney.models.Transaction
+import org.openapp.splitmoney.database.entities.Transaction
 import org.openapp.splitmoney.ui.common.MembersList
 import org.openapp.splitmoney.ui.common.TransactionsList
 import org.openapp.splitmoney.ui.theme.SplitmoneyTheme
@@ -39,6 +38,8 @@ fun Home(navController: NavController, viewModel: HomeViewModel = viewModel()) {
     val currentPage = remember { mutableStateOf("Transactions") }
 
     val homeUiState by viewModel.uiState.collectAsState()
+
+    viewModel.initDB(LocalContext.current)
 
     SplitmoneyTheme {
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -88,6 +89,15 @@ fun Home(navController: NavController, viewModel: HomeViewModel = viewModel()) {
                 FloatingActionButton(
                     onClick = {
                         navController.navigate("NewTransaction")
+//                        viewModel.addTransaction(
+//                            Transaction(
+//                                102,
+//                                "This is a transaction",
+//                                100.0,
+//                                1,
+//                                1
+//                            )
+//                        )
                     }
                 ) {
                     Icon(Icons.Filled.Add, "Floating action button.")
@@ -96,34 +106,15 @@ fun Home(navController: NavController, viewModel: HomeViewModel = viewModel()) {
         ) { innerPadding ->
 
             if(currentPage.value == "Transactions") {
-                val list = listOf(
-                    Transaction(
-                        description = "Momos",
-                        amount = 100.0,
-                        members = listOf(
-                            Member(id = 1, name = "Shavez"),
-                            Member(id = 2, name = "Abhinav"),
-                            Member(id = 3, name = "Abhishek")
-                        ),
-                        payer = Member(id = 1, name = "Shavez")
-                    ),
-                    Transaction(
-                        description = "Burger",
-                        amount = 100.0,
-                        members = listOf(
-                            Member(id = 1, name = "Shavez"),
-                            Member(id = 2, name = "Abhinav"),
-                            Member(id = 3, name = "Abhishek")
-                        ),
-                        payer = Member(id = 2, name = "Abhinav")
-                    )
-                )
+
+                viewModel.getTransactions()
+
                 TransactionsList(homeUiState.transactions, innerPadding = innerPadding)
 
             }
             else if(currentPage.value == "Members") {
 
-                viewModel.getMembers(LocalContext.current)
+                viewModel.getMembers()
 
                 MembersList(members = homeUiState.members, innerPadding)
             }

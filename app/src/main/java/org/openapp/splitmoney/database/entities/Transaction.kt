@@ -9,6 +9,6 @@ data class Transaction(
     @PrimaryKey val id: Int,
     @ColumnInfo var description: String,
     @ColumnInfo var amount: Double,
-    @ColumnInfo var members: List<Int>,
+    @ColumnInfo var members: Int,
     @ColumnInfo var payer: Int
 )
