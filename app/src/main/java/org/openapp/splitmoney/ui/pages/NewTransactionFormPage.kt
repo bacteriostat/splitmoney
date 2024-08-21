@@ -27,24 +27,29 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.openapp.splitmoney.models.Member
-import org.openapp.splitmoney.models.Transaction
+import org.openapp.splitmoney.ui.viewmodels.NewTransactionFormViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import org.openapp.splitmoney.database.entities.Transaction
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewTransactionFormPage(navController: NavController) {
+fun NewTransactionFormPage(navController: NavController, viewModel: NewTransactionFormViewModel = viewModel()) {
+
+    viewModel.initDB(LocalContext.current);
+
     val newTransaction by remember {
         mutableStateOf(
             Transaction(
-                members = listOf(
-                    Member(id = 1, name = "Shavez"),
-                    Member(id = 2, name = "Abhinav"),
-                    Member(id = 3, name = "Abhishek")
-                ),
-                payer = Member(id = 1, name = "Shavez")
+                description = "Hello",
+                members = 1,
+                payer = 1,
+                amount = 20.0
             )
         )
     }
@@ -66,6 +71,7 @@ fun NewTransactionFormPage(navController: NavController) {
                 actions = {
                     IconButton(onClick = {
                         println(newTransaction.amount)
+                        viewModel.addTransaction(newTransaction);
                         navController.popBackStack()
                     }) {
                         Icon(
@@ -140,10 +146,9 @@ fun NewTransactionForm(transaction: Transaction) {
             Text("Paid by")
 
             Button(onClick = {
-                payer = members[2]
-                transaction.payer = members[2]
+
             }) {
-                Text(payer.name)
+                Text(payer.toString())
             }
 
             Text("and split")
